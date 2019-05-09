@@ -1,0 +1,46 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Schwarzenegger!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title>Szoftmax Py MNIST</title>
+        <para>
+            Python
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/j7f9SkJR3oc">https://youtu.be/j7f9SkJR3oc</link>      
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol">https://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol</link>               
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat...
+        </para>
+        <para>
+            Ez a python program a TensorFlow könyvtárt használva ismer fel számjegyeket. Ehhez először egy MNIST adatbázist vesz alapul a tanuláshoz. Az MNIST erre a célra hozták lérte, hogy sok olyan kézzel írott számjegyeket tartalmaz amelyeket gépi tanulásra használnak többek közt.
+        </para>
+          <para>
+            A program futtatásához szükséges a a python3 developer csomag továbbá a tensorflow csomag is.
+            </para>
+              <para>
+            
+            </para>
+            
+    </section>        
+            
+    <section>
+        <title>Minecraft-MALMÖ</title>
+        <para>
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/bAPSu3Rndi8">https://youtu.be/bAPSu3Rndi8</link>      
+        </para>
+        <para>
+            Ezt a feladatot a SMINST for humans alkalmazásban elért lvl 6-os eredménnyel passzolom.  
+        </para>
+        
+    </section>        
+</chapter>       

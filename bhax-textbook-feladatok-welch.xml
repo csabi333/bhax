@@ -1,0 +1,504 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Welch!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title>Első osztályom</title>
+        <para>
+            Valósítsd meg C++-ban és Java-ban az módosított polártranszformációs algoritmust! A matek háttér 
+            teljesen irreleváns, csak annyiban érdekes, hogy az algoritmus egy számítása során két normálist
+            számol ki, az egyiket elspájzolod és egy további logikai taggal az osztályban jelzed, hogy van vagy
+            nincs eltéve kiszámolt szám.
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_5.pdf">
+https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_5.pdf
+</link>               
+        </para>
+        <para>
+            A feladat az objektum orientált programozásról szól. A feladatbana a polártranszformációt használjuk random számok generálásához.
+        </para>
+
+         <programlisting language= "c++">
+            class PolarGen {
+
+            public:
+
+            PolarGen(); //konstruktor
+            ~PolarGen(){} //destruktor       
+       		double kovetkezo(); //random lekérés
+
+            private:
+
+            bool nincsTarolt;
+            double tarolt; //random értéke
+
+            };
+        </programlisting>
+
+        <para>
+           A 'public' rész elemei elérhetőek a class-on kívül amíg a 'private' rész elemi csak azon belül.
+           A konstruktor dolga, hogy létrehozza a PolarGen típusú objektumot.
+           A konstruktor a program futása során csak egyszer hajtódik végre hiába a 'public' része.
+           A destructor csak a program futása végén lesz használva, szintén csak egyszer.
+           Ha class-on belül foglalunk le tárhelyet akkor feltétlen szükséges a destructor használata a lefutás után.
+           <programlisting language = "c++"><![CDATA[
+             #include "polargen.h"
+
+            double PolarGen::kovetkezo(){
+                if (nincsTarolt){
+                    double u1, u2, v1, v2, w;
+                    do{
+                        u1 = std::rand() / (RAND_MAX + 1.0);
+                        u2 = std::rand() / (RAND_MAX + 1.0);
+                        v1 = 2*u1-1;
+                        v2 = 2*u2-1;
+                        w = v1*v1+v2*v2;
+                    }
+                    while (w > 1);
+                    
+            double r = std::sqrt ((-2*std::log (w)) / w);
+            tarolt = r*v2;
+            nincsTarolt = !nincsTarolt;
+            return r*v1;
+            }
+            else{
+                nincsTarolt = !nincsTarolt;
+                return tarolt;
+                }
+
+            }]]></programlisting> 
+           A class-ban szereplő 'kovetkezo()' egy algoritmust tartalmazó függvény, ami generál két random számot ha még nem rendelkezünk vele, az egyiket vissza adja a másikat eltárolja.
+
+          A main függvény tartalma szemlélteti a class használatát abban az esetben ha a feladat egyszerűen az, hogy standard inputra akarunk egy random számot kiíratni ennek a classnak a használatával.
+
+        </para> 
+                <programlisting language = "c++"><![CDATA[
+            int main() 
+            {
+
+                PolarGen rnd;
+
+                std::cout << rnd.kovetkezo() << std::endl; //random szám generálása
+
+            }]]>
+            </programlisting> 
+
+            <para>
+            Megoldás forrása: <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_5.pdf">
+https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_5.pdf
+</link>               
+        </para>
+        <para>
+            A java forrás a következő:
+            <programlisting language = "java"><![CDATA[
+                public class PolarGenerator
+                {
+                    boolean nincsTarolt = true;
+                    double tarolt;
+                    
+                    public PolarGenerator()
+                    {
+                        nincsTarolt = true;
+                    }
+                    
+                    public double kovetkezo() 
+                    {
+                        if(nincsTarolt)
+                        {
+                            double u1, u2, v1, v2, w;
+                            do{
+                                u1 = Math.random();
+                                u2 = Math.random();
+                                v1 = 2* u1 -1;
+                                v2 = 2* u2 -1;
+                                w = v1*v1 + v2*v2;
+                            } while (w>1);
+                            
+                            double r = Math.sqrt((-2 * Math.log(w) / w));
+                            tarolt = r * v2;
+                            nincsTarolt = !nincsTarolt;
+                            return r * v1;
+                        }
+                        else
+                        {
+                            nincsTarolt = !nincsTarolt;
+                            return tarolt;
+                        }
+                    }
+                    
+                    public static void main(String[] args)
+                    {
+                        PolarGenerator g = new PolarGenerator();
+                        for (int i = 0; i < 10; ++i)
+                        {
+                            System.out.println(g.kovetkezo());
+                        }
+                    }
+                }]]>
+            </programlisting>
+            Java-ban az egész program egy class részeként szerepel. Minden elemről külön meg kell határozni hogy a public vagy a private része.
+        </para>
+
+               
+    </section>        
+
+    <section>
+        <title>LZW</title>
+        <para>
+            Valósítsd meg C-ben az LZW algoritmus fa-építését!
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://progpater.blog.hu/2011/04/14/egyutt_tamadjuk_meg">
+https://progpater.blog.hu/2011/04/14/egyutt_tamadjuk_meg
+</link>               
+        </para>
+          <programlisting language = "c++"><![CDATA[
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <math.h>
+
+typedef struct binfa
+{
+  int ertek;
+  struct binfa *bal_nulla;
+  struct binfa *jobb_egy;
+
+} BINFA, *BINFA_PTR;
+
+BINFA_PTR
+uj_elem ()
+{
+  BINFA_PTR p;
+
+  if ((p = (BINFA_PTR) malloc (sizeof (BINFA))) == NULL)
+    {
+      perror ("memoria");
+      exit (EXIT_FAILURE);
+    }
+  return p;
+}
+
+extern void szabadit (BINFA_PTR elem);
+
+
+int
+main (int argc, char **argv)
+{
+  char b;
+
+  BINFA_PTR gyoker = uj_elem ();
+  gyoker->ertek = '/';
+  gyoker->bal_nulla = gyoker->jobb_egy = NULL;
+  BINFA_PTR fa = gyoker;
+
+  while (read (0, (void *) &b, 1))
+    {
+//      write (1, &b, 1);
+      if (b == '0')
+	{
+	  if (fa->bal_nulla == NULL)
+	    {
+	      fa->bal_nulla = uj_elem ();
+	      fa->bal_nulla->ertek = 0;
+	      fa->bal_nulla->bal_nulla = fa->bal_nulla->jobb_egy = NULL;
+	      fa = gyoker;
+	    }
+	  else
+	    {
+	      fa = fa->bal_nulla;
+	    }
+	}
+      else
+	{
+	  if (fa->jobb_egy == NULL)
+	    {
+	      fa->jobb_egy = uj_elem ();
+	      fa->jobb_egy->ertek = 1;
+	      fa->jobb_egy->bal_nulla = fa->jobb_egy->jobb_egy = NULL;
+	      fa = gyoker;
+	    }
+	  else
+	    {
+	      fa = fa->jobb_egy;
+	    }
+	}
+    }
+
+  printf ("\n");
+  kiir (gyoker);
+  szabadit (gyoker);
+}
+
+
+
+
+void
+szabadit (BINFA_PTR elem)
+{
+  if (elem != NULL)
+    {
+      szabadit (elem->jobb_egy);
+      szabadit (elem->bal_nulla);
+      free (elem);
+    }
+}
+                ]]>
+            </programlisting>
+
+            <para>
+            	Az LZW algoritmus egy bináris fát épít a bemeneti egyesekből es nullásokból.
+            	Ezt úgy hajtja végre, hogy ellenőrizzük hogy van-e már 0-ás vagy 1-es gyereke az éppen soron következő elemnek, ha nincs akkor létrehozunk egyet és visszaugrunk a gyökérre, ha van akkor a 0-ás vagy 1-es gyerekre lépünk ezt addig ismételjük amig nem jutunk el oda hogy már nincs több gyerek, ekkor lértehozunk egyet ismét.  
+            </para>
+
+            <para>
+            	A megvalósításhoz létrehozzuk a szükséges struktúrát amiben egy érték és két mutató szerepel. Egy fa elemének nemcsak a saját értékét kell tartalmaznia hanem a rákövetkező elem vagy elemek elérhetőségeit kivéve ha ez az elem a fa szélén van.
+            </para>
+
+            <para>
+            	Az 'ujelem()' függvény akkor lesz használva mikor egy új elemet hozunk létre amelyek BINFA típusúak. A függvény visszaszolgáltatja az elemre mutató pointert.
+            </para>
+
+
+    </section>        
+        
+    <section>
+        <title>Fabejárás</title>
+        <para>
+            Járd be az előző (inorder bejárású) fát pre- és posztorder is!
+        </para>
+        <para>
+        	Tutoriált Ignéczi Tibor
+        </para>
+     
+        <para>
+        	Pre_order bejárás
+
+            Megoldás forrása: 
+ <programlisting language = "c++"><![CDATA[
+
+void 
+kiir_preorder (BINFA_PTR elem)
+{
+	if (elem !=NULL)
+	{
+		++melyseg;
+		if (melyseg > max_melyseg){ max_ max_melyseg=melyseg;}
+
+		for (int i =0; i<melyseg; ++i)printf("---");
+			printf("%c(%d)\n",elem->ertek < 2? '0'+ elem -> ertek : elem->ertek, melyeg-1);
+		kiir_preorder (elem ->bal_nulla);
+		kiir_preorder(elem->jobb_egy);
+		--melyseg;
+	}
+}
+     ]]>
+            </programlisting>
+               
+        </para>
+
+        <para>
+        	Post_order bejárás
+
+            Megoldás forrása: 
+ <programlisting language = "c++"><![CDATA[
+
+void
+kiir_postorder (BINFA_PTR elem)
+{
+	if (elem !=NULL){
+
+		melyseg++;
+		if (melyseg > max_melyseg){max_melyseg=melyseg;}
+		kiir_postorder(elem->bal_nulla);
+		kiir_postorder(elem->jobb_egy);
+
+		for (int i=0; i<melyseg; i++)printf("---");
+			printf("%c(%d)\n",elem->ertek < 2 ? '0'+ elem ->ertek : elem->ertek, melyseg-1);
+
+		melyseg--;
+
+
+	}
+}  ]]>
+            </programlisting>
+               
+        </para>
+        <para>
+        	A postorder és preorder fabejárások között az a külömbség,hogy az eljárásban hogyan hívjuk meg rekurzívan a kiír eljárást.
+        	A preoder kiírás algoritmusa először a fa gyökeréhez közeli elemeket írja ki megfelelő sorrendben majd onnan indul lefelé, az postorder pedig ennek az ellentettje, a fát a gyökérhez legtávolabb lévő elemmel kezdi bejárni, tehát az eredményt nézve két teljesen eltérő ereményt kapunk ugyanazon fa bejárásával.
+        </para>
+    </section>        
+                        
+    <section>
+        <title>Tag a gyökér</title>
+        <para>
+            Az LZW algoritmust ültesd át egy C++ osztályba, legyen egy Tree és egy beágyazott Node
+            osztálya. A gyökér csomópont legyen kompozícióban a fával!
+        </para>
+       
+        <para>
+            Megoldás forrása: <link xlink:href="https://sourceforge.net/p/udprog/code/ci/master/tree/source/vedes/elso/z3a7.cpp">https://sourceforge.net/p/udprog/code/ci/master/tree/source/vedes/elso/z3a7.cpp</link>               
+        </para>
+        <para>
+Az előző bináris fával ellentétben a gyökér nem egy pointer hanem egy '/' karaktert tartalmazó objektum.A védett tagok között lesz a csomopont gyoker, a fa pedig pointer lesz ami az éppen épülő fa azon csomópontjára mutat amit éppen az LZW fa építő algoritmusa határoz meg.
+        </para>
+
+<programlisting language="c"><![CDATA[
+    void operator<< (char b)
+    {
+        if (b == '0')
+        {
+
+            if (!fa->nullasGyermek ())	
+            {
+                
+                Csomopont *uj = new Csomopont ('0');
+                fa->ujNullasGyermek (uj);
+                fa = &gyoker;
+            }
+            else			
+            {
+                
+                fa = fa->nullasGyermek ();
+            }
+        }
+       
+        else
+        {
+            if (!fa->egyesGyermek ())
+            {
+                Csomopont *uj = new Csomopont ('1');
+                fa->ujEgyesGyermek (uj);
+                fa = &gyoker;
+            }
+            else
+            {
+                fa = fa->egyesGyermek ();
+            }
+        }
+    }
+]]></programlisting>  
+     
+        <para>
+Túlterheljük az operátort:
+        </para>
+<programlisting language="c"><![CDATA[
+void operator<< (char b)
+]]></programlisting>  
+     
+        <para>
+C++ ban lehetőségünk van túlterhelni a már meglévő operátorokat, a túlterhelés azt jelenti hogy definiáljuk az operátor számára hogy hogyan működjön, milyen utasításokat hajtson végre, ha például a saját magunk által megalkotott típusokra használjuk.
+        </para>
+
+<programlisting language="c++"><![CDATA[
+    void kiir (void)
+    {
+
+
+        melyseg = 0;
+
+        kiir (&gyoker, std::cout);
+    }
+]]></programlisting>  
+     
+        <para>
+A kiír függvény az ebben az esetben az alapértelmezett outputra írja ki a fát.
+        </para>
+        
+
+    </section>        
+                
+    <section>
+        <title>Mutató a gyökér</title>
+        <para>
+            Írd át az előző forrást, hogy a gyökér csomópont ne kompozícióban, csak aggregációban legyen a 
+            fával!
+        </para>
+         <para>
+            Az előző feladatban részletesen taglaltuk, hogy hogyan is épül fel a
+            C++-os LZW algoritmust alkalmazó program, most ezt kell módosítani, 
+            mivel az előzőben a gyoker tagja volt az osztálynak.
+            Ebben a feladatban pointerre fogjuk átírni, ami nem is annyira nehéz
+            feladat, csak néhány dologra oda kell figyelni.
+        </para>
+         <programlisting language = "c++">
+                Csomopont *gyoker;
+            </programlisting>
+            <para>
+           Ha most próbálkozunk a fordítással akkor rengeteg hibát fogunk kapni, ezeket kell kijavítani a következő lépésekben.
+           A konstruktor módosítása következik-
+                  </para>
+                   <programlisting language="c++">
+LZWBinFa ()
+    {
+        gyoker = new Csomopont ('/');
+        fa = gyoker;
+    }
+            </programlisting>
+            <para>
+Mivel itt a gyoker mutatót egy újonnan lefoglalt tárterületre ráálítjuk ezt majd fel is kell szabadítani. Így néz kia destruktora-
+</para>
+           <programlisting language="c++"><![CDATA[
+~LZWBinFa ()
+    {
+        szabadit (gyoker->egyesGyermek ());
+        szabadit (gyoker->nullasGyermek ());
+        delete(gyoker);
+    }]]>
+            </programlisting>
+<para>
+            Meg kell hívnunk a szabadit függvényt a a gyoker nullás és egyes elemére is mert mostmár a gyökér is rendelkezik ezekkel.
+             A gyoker mutató által mutatott területet pedig a 
+            delete() függvénnyel szabadítjuk fel.
+</para>
+
+
+
+    </section>                     
+
+    <section>
+        <title>Mozgató szemantika</title>
+        <para>
+            Írj az előző programhoz mozgató konstruktort és értékadást, a mozgató konstruktor legyen a mozgató
+            értékadásra alapozva!
+        </para>
+
+
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+       Megoldás forrása: <link xlink:href="https://sourceforge.net/p/udprog/code/ci/master/tree/source/binom/Batfai-Barki/vedes/z3a9.cpp">https://sourceforge.net/p/udprog/code/ci/master/tree/source/binom/Batfai-Barki/vedes/z3a9.cpp</link> 
+   </para>
+   
+            <para>
+            	A megoldáshoz azt as programot vesszük alapul amelyben a gyökér tag volt.
+            	Ezt vesszük alapul és pár módosítás után már egy mozgató konstruktorral rendelkezünk.
+            </para>
+            <para>
+            Létre kell hoznunk a mozgató kontruktort és az értékadást. A paraméterként átadott fa gyökerének az elemeit átküldjük az üres fának majd az eredeti fát úgy töröljük hogy kinullázzuk.
+            </para>
+                    <programlisting language = "c++"><![CDATA[
+    LZWBinFa binFa2 = std::move(binFa);
+    
+    kiFile << binFa2;
+    kiFile << "depth = " << binFa2.getMelyseg () << std::endl;
+    kiFile << "mean = " << binFa2.getAtlag () << std::endl;
+    kiFile << "var = " << binFa2.getSzoras () << std::endl;]]>
+            </programlisting>
+
+            <para>
+            	Még az egyes elemeket kell átmozgatnunk a move függvénnyel, utána kiírjuk a fát.
+            </para>
+
+    </section>                     
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>                

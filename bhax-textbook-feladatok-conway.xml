@@ -1,0 +1,183 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Conway!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title>Hangyaszimulációk</title>
+        <para>
+            Írj Qt C++-ban egy hangyaszimulációs programot, a forrásaidról utólag reverse engineering jelleggel
+            készíts UML osztálydiagramot is!
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2018/10/10/myrmecologist">https://bhaxor.blog.hu/2018/10/10/myrmecologist</link>
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/Myrmecologist?fbclid=IwAR0-KILDOulBGGYdCBeNZypnI0ugra9OiyIsaaiFhyy_0hcL2ksSF4-r1qk">gitlab.com/nbatfai/bhax</link>               
+        </para>
+        <para>
+            A program célja az, hogy szimulálja a hangyák feromonokkal való tájékozódását. Ezt úgy éri el hogy az ablakot felosztja egy négyzetrácsra. A négyzetrácsban a hangyák megkeresik a hozzájuk azt a legközelebb lévő szomszédot amelyiknek a legerősebb a feromon szintje. A négyzetek feromon szintjei folyamatosan csökkennek, kivéve mikor egy hangya belép oda, mert akkor megnő. Ezeket az értékeket a parancssori argumentumokkal adjuk meg.  
+        </para> 
+          <para>
+            A forráskód azon részeire érdemes kitérni amelyek a feladat megoldásához egyediek. Az első ilyen az 'Ant' osztály ameleyet az 'ant.h' header tartalmazza itt csak annyi van hogy a hangyák koordinátáit meghatározzuk az x és y koordináták segítségével, továbbá az irányukat is itt számoljuk random értékkel, amit a 'dir' változó tárol.
+        </para> 
+         <programlisting language="c++"><![CDATA[
+                class Ant
+                {
+                public:
+                    int x;
+                    int y;
+                    int dir;
+
+                    Ant(int x, int y): x(x), y(y) {
+                        
+                        dir = qrand() % 8;
+                        
+                    }
+
+                };
+                typedef std::vector<Ant> Ants;]]>
+            </programlisting> 
+            <para>
+           	A Qt funkciói használatához szükségesek a további header file-ok. A 'QMainWindow' például arra szolgál hogy megnyit egy ablakot amiben a hangyaszimuláció végbemegy.
+        </para> 
+        <programlisting language="c++"><![CDATA[
+                #include <QThread>
+                #include "ant.h"
+
+                class AntThread : public QThread
+                {
+                    Q_OBJECT
+
+                public:
+                    AntThread(Ants * ants, int ***grids, int width, int height,
+                            int delay, int numAnts, int pheromone, int nbrPheromone, 
+                            int evaporation, int min, int max, int cellAntMax);
+                    
+                    ~AntThread();
+                    
+                    void run();
+                    void finish()
+                    {
+                        running = false;
+                    }
+
+                    void pause()
+                    {
+                        paused = !paused;
+                    }
+
+                    bool isRunnung()
+                    {
+                        return running;
+                    }
+
+                private:
+                    bool running {true};
+                    bool paused {false};
+                    Ants* ants;
+                    int** numAntsinCells;
+                    int min, max;
+                    int cellAntMax;
+                    int pheromone;
+                    int evaporation;
+                    int nbrPheromone;
+                    int ***grids;
+                    int width;
+                    int height;
+                    int gridIdx;
+                    int delay;
+                    
+                    void timeDevel();
+
+                    int newDir(int sor, int oszlop, int vsor, int voszlop);
+                    void detDirs(int irany, int& ifrom, int& ito, int& jfrom, int& jto );
+                    int moveAnts(int **grid, int row, int col, int& retrow, int& retcol, int);
+                    double sumNbhs(int **grid, int row, int col, int);
+                    void setPheromone(int **grid, int row, int col);
+
+                signals:
+                    void step ( const int &);
+
+                };]]>
+            </programlisting> 
+             <para>
+            A Qthread osztály szükséges a program szálai kezeléséhez. Az AntThread osztály komstruktora megkapja az AntWIn osztályban megadott bemeneti értékeket, majd elkezdi mozgatni a hangyákat. A feromonszintek és a cellák sűrűségének függvényében kiszámolja a hangyák irányát és ezeket az számításokat visszaszolgátatlja az AntWin osztálynak.
+        </para> 
+        <figure>
+<title>Hangyaszimuláció</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./hangyaszim.png" format="JPG"/>
+</imageobject>
+</mediaobject>
+</figure>
+
+    </section>        
+    <section>
+        <title>Java életjáték</title>
+        <para>
+            Írd meg Java-ban a John Horton Conway-féle életjátékot, 
+            valósítsa meg a sikló-kilövőt!
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apb.html?fbclid=IwAR2U4uV5nDEFLftjIS2zbLqoHu0tmwML8vBzuHbNAkPJoLMxcC1ULeGrfhY">tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/</link>               
+        </para>
+        <para>
+            John Horton Conway angol matematikus nevéhez fűződik az életjáték. A játékoznak kizárólag csak a kiinduló pontot kell meghatároznia. Matematikai meghatározásában a neve ennek a játéknak a sejtautomata melyben a cellákat a négyzetrácsok és a sejteket pedig korongok jelképezik. Minden sejtnek nyolc szomszédos cellája van, ha egy generációban egy sejtnek van kettő vagy három szomszédja ami szintén sejt akkor az a következő generációban is élni fog, minden más esetben kihal. Ha egy üres cellának pontosan három élő sejtüszomszédja van akkor ott új sejt keletkezik. Ezek a szabályok az időFejlődés() függvényben vannak jelen. Két időiterációt két rács fogja tárolni a t_n és a t_n+1. Ahol az első az a jelenlegi állapot a második az ebből keletkezett következő lépést tárolja. A sejttérbe időnként 'siklóágyúkat' helyezünk ezek 'élölényeket' jelképeznek. Az addKeyListener, addMouseListener, addMouseMotionListener függvényekben 
+            meghatározzuk azokat a billentyűlenyomásokat és egéreseményeket, 
+            amelyekkel tudjuk a futó Életjáték-program eseményeinek alakulását befolyásolni.
+        </para> 
+ <figure>       
+        <title>Sejtautomata</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./sejtauto.png" format="JPG"/>
+</imageobject>
+</mediaobject>
+</figure>           
+    </section>        
+    <section>
+        <title>Qt C++ életjáték</title>
+        <para>
+            Most Qt C++-ban!
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://sourceforge.net/p/udprog/code/ci/master/tree/source/labor/Qt/Sejtauto/">https://sourceforge.net/p/udprog/code/ci/master/tree/source/labor/Qt/Sejtauto/</link>               
+        </para>
+        <para>
+            Az előző feladatot fogjuk megnézni C++ környezetben, méghozzá ismét a Qt keretrendszer segítségével. A Java és a C++ hasonlóságainak köszönhetően nem az előző feladat forráskódját vehetjük támaszpontnak. A forrás leforditásához a fájlokat egy mappába kell helyezni és ebben a mappában futtatni kell a 'qmake Tool' parancsot, miután ez létrehoz egy eletjatek.pro és egy Makefile nevű fájlt, A Makefile használatával kaounk egy futtatható állományt, amit a terminálon keresztül indítunk el.
+        </para>            
+    </section>        
+    <section>
+        <title>BrainB Benchmark</title>
+        <para>
+        </para>
+        <para>
+            Megoldás videó: 
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://gitlab.com/lbalazs96/bhax/tree/master/attention_raising/Source/BrainB">https://gitlab.com/lbalazs96/bhax/tree/master/attention_raising/Source/BrainB</link>               
+        </para>
+        <para>
+            A program célja az eSport teheségek keresése. A program ezt úgy akarja elérni hogy azt a feladatot adja a felhasználónak, hogy kövessen egy Samu Entropy nevű formán. A program több szempontból vizsgálja a játékos teljesítményét. Az első az hogy mennyi időbe telik neki újra megtalálni az alakot miután azt esetleg elveszti a követésében. A második az hogy mennyire volt bonyolult az alak követése ennek elvesztésének pillanatában. A alakzatok bonyolódása lelassul ha elhagyjuk a követni akart Samu Entropy-t. A program egy fáljban értékeli a játékos teljesítményét, ez lesz a kimenete. A program a Qt grafikus felületét használja.
+        </para> 
+         <figure>       
+        <title>BrainB benchmark</title>
+<mediaobject>
+<imageobject>
+<imagedata fileref="./brainb.png" format="JPG"/>
+</imageobject>
+</mediaobject>
+</figure>             
+    </section>        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>                
